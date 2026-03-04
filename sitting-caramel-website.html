@@ -1,0 +1,1429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sitting Caramel — Technology Consulting</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700;1,900&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Josefin+Sans:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --caramel:    #C17F3A;
+  --caramel-dk: #8F5A1E;
+  --caramel-lt: #DFA55C;
+  --cream:      #F5EDD9;
+  --parchment:  #EDE0C4;
+  --warm-white: #FAF6EE;
+  --terra:      #B85C38;
+  --bark:       #4A3320;
+  --ink:        #2C1F0E;
+  --dusty:      #8C7355;
+  --sage:       #7A8C6E;
+  --fog:        #C9BBAA;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Libre Baskerville', Georgia, serif;
+  background: var(--warm-white);
+  color: var(--ink);
+  overflow-x: hidden;
+  cursor: none;
+}
+
+/* ── CURSOR ── */
+.cursor {
+  position: fixed;
+  width: 10px; height: 10px;
+  background: var(--caramel);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: width 0.3s, height 0.3s;
+  mix-blend-mode: multiply;
+}
+.cursor-trail {
+  position: fixed;
+  width: 36px; height: 36px;
+  border: 1.5px solid var(--caramel-lt);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: all 0.18s ease;
+  mix-blend-mode: multiply;
+}
+
+/* ── PAPER TEXTURE ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='paper'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23paper)' opacity='0.035'/%3E%3C/svg%3E");
+  pointer-events: none;
+  z-index: 200;
+  opacity: 0.6;
+}
+
+/* ── NAV ── */
+nav {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 500;
+  padding: 32px 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  transition: all 0.4s;
+}
+nav.scrolled {
+  padding: 20px 64px;
+  background: rgba(245,237,217,0.92);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid var(--parchment);
+}
+
+.logo {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: 22px;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--ink);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.logo-dot {
+  width: 7px; height: 7px;
+  background: var(--caramel);
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+}
+.nav-link {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--dusty);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.nav-link:hover { color: var(--ink); }
+
+.nav-btn {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--warm-white);
+  background: var(--caramel-dk);
+  border: none;
+  padding: 11px 26px;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.25s;
+  display: inline-block;
+}
+.nav-btn:hover { background: var(--bark); }
+
+/* ── HERO ── */
+.hero {
+  min-height: 100vh;
+  background: var(--cream);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Diagonal split */
+.hero::after {
+  content: '';
+  position: absolute;
+  top: 0; bottom: 0;
+  left: 50%;
+  width: 120px;
+  background: var(--cream);
+  transform: skewX(-3deg) translateX(-50%);
+  z-index: 2;
+}
+
+.hero-left {
+  position: relative;
+  z-index: 3;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 0 64px 80px;
+  background: var(--cream);
+}
+
+.hero-eyebrow {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.4em;
+  text-transform: uppercase;
+  color: var(--caramel);
+  margin-bottom: 28px;
+  opacity: 0;
+  animation: riseIn 0.9s ease 0.2s forwards;
+}
+
+.hero-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: clamp(60px, 7.5vw, 108px);
+  line-height: 0.92;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-bottom: 32px;
+  opacity: 0;
+  animation: riseIn 1s ease 0.35s forwards;
+}
+.hero-title em {
+  font-style: italic;
+  color: var(--caramel);
+  display: block;
+}
+
+.hero-sub {
+  max-width: 380px;
+  font-size: 17px;
+  line-height: 1.8;
+  color: var(--dusty);
+  font-weight: 400;
+  margin-bottom: 44px;
+  opacity: 0;
+  animation: riseIn 1s ease 0.5s forwards;
+}
+
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 28px;
+  opacity: 0;
+  animation: riseIn 1s ease 0.65s forwards;
+}
+
+.btn-caramel {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  background: var(--caramel);
+  color: var(--warm-white);
+  border: none;
+  padding: 15px 36px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+.btn-caramel::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--bark);
+  transform: translateX(-100%);
+  transition: transform 0.3s ease;
+}
+.btn-caramel:hover::before { transform: translateX(0); }
+.btn-caramel span { position: relative; z-index: 1; }
+
+.btn-ghost {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--dusty);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: color 0.2s;
+}
+.btn-ghost:hover { color: var(--ink); }
+.btn-ghost::after { content: '→'; }
+
+.hero-right {
+  position: relative;
+  z-index: 1;
+  background: var(--parchment);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+/* Big decorative type in hero right */
+.hero-deco {
+  position: absolute;
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-style: italic;
+  font-size: 260px;
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(193,127,58,0.12);
+  pointer-events: none;
+  user-select: none;
+  white-space: nowrap;
+  transform: rotate(-15deg) translateY(10%);
+  letter-spacing: -0.05em;
+}
+
+.hero-card {
+  background: var(--warm-white);
+  border: 1px solid var(--fog);
+  padding: 40px 36px;
+  max-width: 320px;
+  position: relative;
+  z-index: 2;
+  box-shadow: 8px 8px 40px rgba(74,51,32,0.08);
+  opacity: 0;
+  animation: riseIn 1.1s ease 0.8s forwards;
+}
+.hero-card-label {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--caramel);
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--parchment);
+}
+.hero-card-stat {
+  margin-bottom: 18px;
+}
+.hero-card-stat:last-child { margin-bottom: 0; }
+.stat-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 36px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1;
+}
+.stat-num sup { font-size: 18px; color: var(--caramel); }
+.stat-desc {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: var(--dusty);
+  margin-top: 3px;
+}
+
+@keyframes riseIn {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ── MARQUEE ── */
+.marquee-bar {
+  background: var(--caramel-dk);
+  padding: 14px 0;
+  overflow: hidden;
+  white-space: nowrap;
+}
+.marquee-inner {
+  display: inline-block;
+  animation: marqueeScroll 30s linear infinite;
+}
+.marquee-inner span {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: rgba(245,237,217,0.7);
+  padding: 0 32px;
+}
+.marquee-inner span.accent { color: var(--caramel-lt); }
+@keyframes marqueeScroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* ── SECTIONS ── */
+section { position: relative; }
+
+.section-wrap {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 100px 64px;
+}
+
+.eyebrow {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: var(--caramel);
+  margin-bottom: 18px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.eyebrow::before {
+  content: '';
+  width: 28px; height: 1px;
+  background: var(--caramel-lt);
+  display: block;
+  flex-shrink: 0;
+}
+
+.display-title {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.display-title em { font-style: italic; color: var(--caramel); }
+
+/* ── ABOUT ── */
+.about-section { background: var(--warm-white); }
+.about-section .section-wrap {
+  display: grid;
+  grid-template-columns: 5fr 4fr;
+  gap: 80px;
+  align-items: start;
+}
+
+.about-left {}
+.about-title { font-size: clamp(42px, 5vw, 68px); margin-bottom: 36px; }
+
+.about-body {
+  font-size: 17px;
+  line-height: 1.85;
+  color: var(--dusty);
+}
+.about-body p + p { margin-top: 20px; }
+.about-body strong { color: var(--bark); font-weight: 700; }
+
+.about-right { padding-top: 24px; }
+
+.pull-quote {
+  border-left: 3px solid var(--caramel);
+  padding: 0 0 0 28px;
+  margin-bottom: 48px;
+}
+.pull-quote p {
+  font-family: 'Playfair Display', serif;
+  font-size: 24px;
+  font-style: italic;
+  line-height: 1.5;
+  color: var(--bark);
+  font-weight: 400;
+}
+
+.values-list { list-style: none; }
+.value-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 20px 0;
+  border-bottom: 1px solid var(--parchment);
+}
+.value-item:first-child { border-top: 1px solid var(--parchment); }
+.value-num {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  color: var(--caramel-lt);
+  flex-shrink: 0;
+  padding-top: 3px;
+}
+.value-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 4px;
+}
+.value-body {
+  font-size: 14px;
+  line-height: 1.65;
+  color: var(--dusty);
+  font-family: 'Josefin Sans', sans-serif;
+  font-weight: 300;
+  letter-spacing: 0.02em;
+}
+
+/* ── SERVICES ── */
+.services-section { background: var(--cream); }
+
+.services-intro {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 64px;
+  margin-bottom: 64px;
+  align-items: end;
+}
+
+.services-title { font-size: clamp(40px, 5vw, 66px); }
+.services-intro-body {
+  font-size: 16px;
+  line-height: 1.8;
+  color: var(--dusty);
+  align-self: end;
+}
+
+.services-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2px;
+  background: var(--fog);
+}
+
+.svc-card {
+  background: var(--cream);
+  padding: 44px 36px;
+  position: relative;
+  transition: background 0.3s;
+}
+.svc-card:hover { background: var(--warm-white); }
+
+.svc-glyph {
+  font-size: 36px;
+  margin-bottom: 24px;
+  display: block;
+  transition: transform 0.3s;
+}
+.svc-card:hover .svc-glyph { transform: scale(1.15) rotate(5deg); }
+
+.svc-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 14px;
+  line-height: 1.15;
+}
+.svc-title em { font-style: italic; color: var(--caramel-dk); }
+
+.svc-body {
+  font-size: 14px;
+  line-height: 1.75;
+  color: var(--dusty);
+  margin-bottom: 24px;
+}
+
+.svc-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-bottom: 28px;
+}
+.svc-list li {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  color: var(--dusty);
+  padding-left: 18px;
+  position: relative;
+}
+.svc-list li::before {
+  content: '·';
+  position: absolute;
+  left: 6px;
+  color: var(--caramel);
+  font-size: 18px;
+  top: -3px;
+}
+
+.svc-price {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--caramel-dk);
+  border-top: 1px solid var(--parchment);
+  padding-top: 20px;
+}
+
+/* ── EDITORIAL STRIP ── */
+.editorial {
+  background: var(--bark);
+  overflow: hidden;
+  position: relative;
+}
+.editorial .section-wrap {
+  padding: 80px 64px;
+  display: grid;
+  grid-template-columns: 1fr 2px 1fr;
+  gap: 64px;
+  align-items: center;
+}
+.editorial-divider {
+  background: rgba(245,237,217,0.12);
+  align-self: stretch;
+}
+.editorial-left {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 4vw, 54px);
+  font-weight: 900;
+  font-style: italic;
+  color: var(--parchment);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+}
+.editorial-left em { font-style: normal; color: var(--caramel-lt); }
+
+.editorial-right {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+.editorial-stat {
+  display: flex;
+  align-items: baseline;
+  gap: 16px;
+  padding-bottom: 28px;
+  border-bottom: 1px solid rgba(245,237,217,0.1);
+}
+.editorial-stat:last-child { border-bottom: none; padding-bottom: 0; }
+.e-num {
+  font-family: 'Playfair Display', serif;
+  font-size: 52px;
+  font-weight: 900;
+  color: var(--caramel-lt);
+  line-height: 1;
+  flex-shrink: 0;
+}
+.e-label {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 300;
+  letter-spacing: 0.08em;
+  color: var(--fog);
+  line-height: 1.5;
+}
+
+/* ── PROCESS ── */
+.process-section { background: var(--warm-white); }
+.process-section .section-wrap { padding-bottom: 80px; }
+
+.process-title { font-size: clamp(38px, 5vw, 64px); margin-bottom: 64px; }
+
+.process-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  position: relative;
+  gap: 0;
+}
+.process-grid::before {
+  content: '';
+  position: absolute;
+  top: 22px; left: 0; right: 0;
+  height: 1px;
+  background: repeating-linear-gradient(
+    90deg,
+    var(--fog) 0, var(--fog) 8px,
+    transparent 8px, transparent 16px
+  );
+}
+
+.process-step {
+  padding: 0 28px;
+  text-align: left;
+}
+.process-step:first-child { padding-left: 0; }
+.process-step:last-child { padding-right: 0; }
+
+.p-bubble {
+  width: 44px; height: 44px;
+  background: var(--cream);
+  border: 1.5px solid var(--caramel-lt);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--caramel-dk);
+  margin-bottom: 24px;
+  position: relative;
+  z-index: 1;
+  transition: all 0.3s;
+}
+.process-step:hover .p-bubble {
+  background: var(--caramel);
+  border-color: var(--caramel);
+  color: var(--warm-white);
+}
+
+.p-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--ink);
+  margin-bottom: 10px;
+}
+.p-body {
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--dusty);
+}
+
+/* ── CLIENTS ── */
+.clients-section { background: var(--parchment); }
+.clients-section .section-wrap { padding-top: 80px; padding-bottom: 80px; }
+
+.clients-title { font-size: clamp(38px, 5vw, 62px); margin-bottom: 48px; }
+
+.clients-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.client-card {
+  background: var(--warm-white);
+  border: 1px solid var(--fog);
+  padding: 36px 32px;
+  transition: all 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+.client-card::before {
+  content: '';
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  height: 3px;
+  background: var(--caramel);
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.35s ease;
+}
+.client-card:hover { transform: translateY(-6px); box-shadow: 0 16px 40px rgba(74,51,32,0.1); }
+.client-card:hover::before { transform: scaleX(1); }
+.client-card.featured {
+  background: var(--caramel-dk);
+  color: var(--cream);
+  border-color: var(--caramel-dk);
+}
+.client-card.featured .cc-sub { color: var(--caramel-lt); }
+.client-card.featured .cc-body { color: rgba(245,237,217,0.7); }
+.client-card.featured .cc-range { border-color: rgba(245,237,217,0.15); color: var(--cream); }
+.client-card.featured .cc-range span { color: var(--caramel-lt); }
+.client-card.featured .svc-list li { color: rgba(245,237,217,0.6); }
+
+.cc-icon { font-size: 30px; margin-bottom: 18px; display: block; }
+.cc-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+.cc-sub {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--caramel);
+  margin-bottom: 18px;
+}
+.cc-body {
+  font-size: 14px;
+  line-height: 1.72;
+  color: var(--dusty);
+  margin-bottom: 20px;
+}
+.cc-range {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 12px;
+  letter-spacing: 0.08em;
+  color: var(--dusty);
+  border-top: 1px solid var(--parchment);
+  padding-top: 18px;
+  margin-top: 4px;
+}
+.cc-range span { color: var(--caramel-dk); font-weight: 600; }
+
+/* ── TESTIMONIALS ── */
+.testi-section { background: var(--cream); }
+.testi-section .section-wrap { padding-top: 80px; padding-bottom: 80px; }
+.testi-title { font-size: clamp(36px, 4.5vw, 58px); margin-bottom: 48px; }
+
+.testi-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.testi-card {
+  border: 1px solid var(--fog);
+  padding: 36px 30px;
+  background: var(--warm-white);
+  transition: border-color 0.3s;
+  position: relative;
+}
+.testi-card:hover { border-color: var(--caramel-lt); }
+
+.testi-mark {
+  font-family: 'Playfair Display', serif;
+  font-size: 72px;
+  color: var(--caramel-lt);
+  opacity: 0.4;
+  line-height: 0.6;
+  margin-bottom: 16px;
+  display: block;
+}
+.testi-text {
+  font-size: 15px;
+  font-style: italic;
+  line-height: 1.8;
+  color: var(--dusty);
+  margin-bottom: 24px;
+}
+.testi-author {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+}
+.testi-initial {
+  width: 38px; height: 38px;
+  background: var(--parchment);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--caramel-dk);
+  flex-shrink: 0;
+}
+.testi-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.testi-role {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  color: var(--dusty);
+  margin-top: 2px;
+}
+
+/* ── CTA ── */
+.cta-section {
+  background: var(--caramel);
+  position: relative;
+  overflow: hidden;
+}
+
+.cta-section::before {
+  content: 'SITTING CARAMEL';
+  position: absolute;
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: 300px;
+  color: transparent;
+  -webkit-text-stroke: 1px rgba(255,255,255,0.08);
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  white-space: nowrap;
+  letter-spacing: 0.05em;
+}
+
+.cta-section .section-wrap {
+  text-align: center;
+  padding: 120px 64px;
+}
+
+.cta-eyebrow {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.38em;
+  text-transform: uppercase;
+  color: rgba(245,237,217,0.7);
+  margin-bottom: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+}
+.cta-eyebrow::before, .cta-eyebrow::after {
+  content: '';
+  display: block;
+  width: 36px; height: 1px;
+  background: rgba(245,237,217,0.3);
+}
+
+.cta-title {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(48px, 7vw, 96px);
+  font-weight: 900;
+  color: var(--cream);
+  line-height: 0.95;
+  letter-spacing: -0.03em;
+  margin-bottom: 24px;
+}
+.cta-title em { font-style: italic; color: var(--bark); }
+
+.cta-sub {
+  font-size: 18px;
+  line-height: 1.7;
+  color: rgba(245,237,217,0.75);
+  max-width: 480px;
+  margin: 0 auto 44px;
+}
+
+.cta-btns {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.btn-light {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: var(--cream);
+  color: var(--bark);
+  border: none;
+  padding: 16px 40px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.25s;
+}
+.btn-light:hover { background: var(--warm-white); transform: translateY(-2px); }
+
+.btn-outline-light {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  background: transparent;
+  color: var(--cream);
+  border: 1.5px solid rgba(245,237,217,0.4);
+  padding: 15px 40px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+  transition: all 0.25s;
+}
+.btn-outline-light:hover { border-color: var(--cream); }
+
+/* ── FOOTER ── */
+footer {
+  background: var(--ink);
+  padding: 60px 64px 40px;
+}
+.footer-top {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr 1fr 1fr;
+  gap: 48px;
+  padding-bottom: 44px;
+  border-bottom: 1px solid rgba(245,237,217,0.08);
+  margin-bottom: 32px;
+}
+.footer-brand-name {
+  font-family: 'Playfair Display', serif;
+  font-weight: 900;
+  font-size: 26px;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  color: var(--cream);
+  margin-bottom: 14px;
+}
+.footer-brand p {
+  font-size: 14px;
+  line-height: 1.7;
+  color: rgba(245,237,217,0.4);
+}
+.footer-col h4 {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.3em;
+  text-transform: uppercase;
+  color: var(--caramel-lt);
+  margin-bottom: 18px;
+}
+.footer-col ul { list-style: none; }
+.footer-col ul li { margin-bottom: 10px; }
+.footer-col ul a {
+  font-size: 14px;
+  color: rgba(245,237,217,0.4);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+.footer-col ul a:hover { color: var(--cream); }
+.footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.footer-copy {
+  font-family: 'Josefin Sans', sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.1em;
+  color: rgba(245,237,217,0.2);
+}
+.footer-tag {
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: 14px;
+  color: var(--caramel-lt);
+  opacity: 0.5;
+}
+
+/* ── REVEAL ── */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.85s ease, transform 0.85s ease;
+}
+.reveal.in { opacity: 1; transform: none; }
+.d1 { transition-delay: 0.1s; }
+.d2 { transition-delay: 0.2s; }
+.d3 { transition-delay: 0.3s; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 960px) {
+  nav, footer { padding-left: 24px; padding-right: 24px; }
+  nav.scrolled { padding-left: 24px; padding-right: 24px; }
+  .section-wrap { padding-left: 24px; padding-right: 24px; }
+  .hero { grid-template-columns: 1fr; }
+  .hero-right { display: none; }
+  .hero-left { padding: 120px 24px 60px; }
+  .about-section .section-wrap,
+  .services-intro,
+  .editorial .section-wrap,
+  .clients-grid,
+  .testi-grid,
+  .footer-top { grid-template-columns: 1fr; }
+  .services-cards { grid-template-columns: 1fr; gap: 1px; }
+  .process-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+  .process-grid::before { display: none; }
+  .editorial-divider { display: none; }
+  .nav-right .nav-link { display: none; }
+  .cta-section::before { font-size: 100px; }
+  .hero::after { display: none; }
+}
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cur"></div>
+<div class="cursor-trail" id="trail"></div>
+
+<!-- NAV -->
+<nav id="nav">
+  <a href="#" class="logo"><span class="logo-dot"></span>Sitting Caramel</a>
+  <div class="nav-right">
+    <a href="#services" class="nav-link">Services</a>
+    <a href="#process" class="nav-link">Process</a>
+    <a href="#clients" class="nav-link">Clients</a>
+    <a href="#contact" class="nav-btn">Start a Conversation</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-left">
+    <div class="hero-eyebrow">Technology Consulting · New York</div>
+    <h1 class="hero-title">
+      We advise.<br>We build.<br><em>We deliver.</em>
+    </h1>
+    <p class="hero-sub">Sitting Caramel helps companies at every stage make smarter technology decisions — and builds the products those decisions call for.</p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-caramel"><span>Book a Discovery Call</span></a>
+      <a href="#services" class="btn-ghost">Our Services</a>
+    </div>
+  </div>
+  <div class="hero-right">
+    <div class="hero-deco">B</div>
+    <div class="hero-card">
+      <div class="hero-card-label">What a Typical Engagement Looks Like</div>
+      <div class="hero-card-stat">
+        <div class="stat-num">2<sup>wk</sup></div>
+        <div class="stat-desc">Discovery Sprint to first recommendation</div>
+      </div>
+      <div class="hero-card-stat">
+        <div class="stat-num">48<sup>hr</sup></div>
+        <div class="stat-desc">Proposal turnaround after initial call</div>
+      </div>
+      <div class="hero-card-stat">
+        <div class="stat-num">3<sup>×</sup></div>
+        <div class="stat-desc">Average client ROI on first engagement</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-bar">
+  <div class="marquee-inner">
+    <span>Technology Advisory</span><span class="accent">·</span>
+    <span>Product Development</span><span class="accent">·</span>
+    <span>Discovery Sprints</span><span class="accent">·</span>
+    <span>CTO-as-a-Service</span><span class="accent">·</span>
+    <span>MVP Architecture</span><span class="accent">·</span>
+    <span>AI Development</span><span class="accent">·</span>
+    <span>Systems Modernization</span><span class="accent">·</span>
+    <span>Vendor Selection</span><span class="accent">·</span>
+    <span>Tech Due Diligence</span><span class="accent">·</span>
+    <span>Technology Advisory</span><span class="accent">·</span>
+    <span>Product Development</span><span class="accent">·</span>
+    <span>Discovery Sprints</span><span class="accent">·</span>
+    <span>CTO-as-a-Service</span><span class="accent">·</span>
+    <span>MVP Architecture</span><span class="accent">·</span>
+    <span>AI Development</span><span class="accent">·</span>
+    <span>Systems Modernization</span><span class="accent">·</span>
+    <span>Vendor Selection</span><span class="accent">·</span>
+    <span>Tech Due Diligence</span><span class="accent">·</span>
+  </div>
+</div>
+
+<!-- ABOUT -->
+<section class="about-section" id="about">
+  <div class="section-wrap">
+    <div class="about-left reveal">
+      <div class="eyebrow">Our Philosophy</div>
+      <h2 class="display-title about-title">Technology is only as good as the thinking <em>behind it.</em></h2>
+      <div class="about-body">
+        <p>Most technology decisions are made under pressure — a vendor's pitch, a board's mandate, a competitor's move. The result is a tangle of tools that don't fit, products built on shaky foundations, and teams buried in complexity of their own making.</p>
+        <p><strong>Sitting Caramel exists to change that.</strong> We bring independent thinking, deep technical judgment, and a craftsman's care to every engagement. We advise honestly. We build carefully. And we stay until it works.</p>
+      </div>
+    </div>
+    <div class="about-right reveal d2">
+      <div class="pull-quote">
+        <p>"The truth costs less than a bad technology decision. We tell clients what they need to hear."</p>
+      </div>
+      <ul class="values-list">
+        <li class="value-item">
+          <span class="value-num">01</span>
+          <div>
+            <div class="value-title">Independence</div>
+            <div class="value-body">No vendor relationships. No referral fees. Our only loyalty is to your outcome.</div>
+          </div>
+        </li>
+        <li class="value-item">
+          <span class="value-num">02</span>
+          <div>
+            <div class="value-title">Candor</div>
+            <div class="value-body">We tell you when to build, when to buy, and when to do nothing at all.</div>
+          </div>
+        </li>
+        <li class="value-item">
+          <span class="value-num">03</span>
+          <div>
+            <div class="value-title">Craftsmanship</div>
+            <div class="value-body">Every product we deliver is something we're proud to put our name on.</div>
+          </div>
+        </li>
+        <li class="value-item">
+          <span class="value-num">04</span>
+          <div>
+            <div class="value-title">Pace</div>
+            <div class="value-body">Discovery in two weeks. Proposals in 48 hours. Delivery on schedule.</div>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- SERVICES -->
+<section class="services-section" id="services">
+  <div class="section-wrap">
+    <div class="services-intro">
+      <div class="reveal">
+        <div class="eyebrow">What We Do</div>
+        <h2 class="display-title services-title">Three ways Sitting Caramel <em>serves you.</em></h2>
+      </div>
+      <p class="services-intro-body reveal d2">We're not a vendor. We're not an agency. We're a thinking partner that also builds — advisory and execution from the same trusted source.</p>
+    </div>
+
+    <div class="services-cards">
+      <div class="svc-card reveal">
+        <span class="svc-glyph">◈</span>
+        <h3 class="svc-title">Technology <em>Advisory</em></h3>
+        <p class="svc-body">Strategic guidance on the technology decisions that shape your business. We evaluate, recommend, and roadmap — so you invest in the right tools, not just the loudest ones.</p>
+        <ul class="svc-list">
+          <li>Tech stack audits & recommendations</li>
+          <li>Build vs. buy analysis</li>
+          <li>CTO-as-a-Service</li>
+          <li>Digital transformation roadmaps</li>
+          <li>Vendor selection & negotiation</li>
+        </ul>
+        <div class="svc-price">From $2,500 / month</div>
+      </div>
+
+      <div class="svc-card reveal d1">
+        <span class="svc-glyph">⬡</span>
+        <h3 class="svc-title">Product <em>Development</em></h3>
+        <p class="svc-body">We take a business need and build the product that solves it. From architecture to deployment, no hand-offs to strangers. We own the outcome alongside you.</p>
+        <ul class="svc-list">
+          <li>MVP & proof-of-concept builds</li>
+          <li>Internal tools & automation</li>
+          <li>API integrations & pipelines</li>
+          <li>Web & mobile applications</li>
+          <li>AI / ML feature development</li>
+        </ul>
+        <div class="svc-price">From $10,000 / project</div>
+      </div>
+
+      <div class="svc-card reveal d2">
+        <span class="svc-glyph">◇</span>
+        <h3 class="svc-title">Discovery <em>Sprints</em></h3>
+        <p class="svc-body">A focused 2–4 week engagement producing a clear technology assessment, options analysis, and a prioritized recommendation. The fastest path to certainty.</p>
+        <ul class="svc-list">
+          <li>Stakeholder interviews & audit</li>
+          <li>Current-state assessment</li>
+          <li>Options analysis with trade-offs</li>
+          <li>Written recommendation report</li>
+          <li>Executive-ready presentation</li>
+        </ul>
+        <div class="svc-price">$3,000 – $8,000 fixed</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- EDITORIAL STATS STRIP -->
+<section class="editorial">
+  <div class="section-wrap">
+    <div class="editorial-left reveal">
+      "Good technology decisions don't come from <em>more options.</em> They come from clearer thinking."
+    </div>
+    <div class="editorial-divider"></div>
+    <div class="editorial-right reveal d2">
+      <div class="editorial-stat">
+        <div class="e-num">100%</div>
+        <div class="e-label">Engagements delivered on time and in scope</div>
+      </div>
+      <div class="editorial-stat">
+        <div class="e-num">$0</div>
+        <div class="e-label">Vendor kickbacks or referral fees. Ever.</div>
+      </div>
+      <div class="editorial-stat">
+        <div class="e-num">14d</div>
+        <div class="e-label">Average time from first call to first insight</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section class="process-section" id="process">
+  <div class="section-wrap">
+    <div class="eyebrow reveal">How We Work</div>
+    <h2 class="display-title process-title reveal d1">A practiced <em>method.</em></h2>
+    <div class="process-grid">
+      <div class="process-step reveal">
+        <div class="p-bubble">01</div>
+        <div class="p-title">Listen</div>
+        <p class="p-body">No templates. No assumptions. We start with a deep-dive conversation to understand your business before we touch the technology.</p>
+      </div>
+      <div class="process-step reveal d1">
+        <div class="p-bubble">02</div>
+        <div class="p-title">Assess</div>
+        <p class="p-body">We audit your current state — systems, processes, team, and goals. This is where good consulting earns its keep.</p>
+      </div>
+      <div class="process-step reveal d2">
+        <div class="p-bubble">03</div>
+        <div class="p-title">Recommend</div>
+        <p class="p-body">A clear written report with prioritized options, trade-offs, and a recommended path. No jargon. No padding. Just the decision you need.</p>
+      </div>
+      <div class="process-step reveal d3">
+        <div class="p-bubble">04</div>
+        <div class="p-title">Build</div>
+        <p class="p-body">Weekly updates. Milestone payments. A formal handoff that leaves your team fully equipped and the work fully done.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLIENTS -->
+<section class="clients-section" id="clients">
+  <div class="section-wrap">
+    <div class="eyebrow reveal">Who We Serve</div>
+    <h2 class="display-title clients-title reveal d1">Every stage. <em>Every ambition.</em></h2>
+    <div class="clients-grid">
+      <div class="client-card reveal">
+        <span class="cc-icon">🌱</span>
+        <div class="cc-name">Startups</div>
+        <div class="cc-sub">Seed · Series A/B</div>
+        <p class="cc-body">Move fast without breaking things that matter. We help founders make the right architecture decisions early — the ones that are expensive to undo later.</p>
+        <ul class="svc-list"><li>CTO-as-a-Service</li><li>MVP architecture & build</li><li>Tech stack selection</li></ul>
+        <div class="cc-range">Typical: <span>$10K – $50K</span></div>
+      </div>
+      <div class="client-card featured reveal d1">
+        <span class="cc-icon">🏢</span>
+        <div class="cc-name">Mid-Market</div>
+        <div class="cc-sub">50–500 Employees</div>
+        <p class="cc-body">You've outgrown your tools but aren't sure what comes next. We find the leverage points — the bottlenecks and gaps costing you most.</p>
+        <ul class="svc-list"><li>Systems modernization</li><li>Operational tooling</li><li>Fractional CTO support</li></ul>
+        <div class="cc-range">Typical: <span>$50K – $150K</span></div>
+      </div>
+      <div class="client-card reveal d2">
+        <span class="cc-icon">🏛</span>
+        <div class="cc-name">Enterprise</div>
+        <div class="cc-sub">500+ Employees</div>
+        <p class="cc-body">You have internal teams but need an outside perspective. We bring speed, independence, and strategic clarity to complex challenges.</p>
+        <ul class="svc-list"><li>Technology strategy</li><li>AI/ML product development</li><li>Tech due diligence</li></ul>
+        <div class="cc-range">Typical: <span>$100K – $250K+</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testi-section">
+  <div class="section-wrap">
+    <div class="eyebrow reveal">Client Voices</div>
+    <h2 class="display-title testi-title reveal d1">Heard from people who <em>know.</em></h2>
+    <div class="testi-grid">
+      <div class="testi-card reveal">
+        <span class="testi-mark">"</span>
+        <p class="testi-text">Sitting Caramel didn't just tell us what to build — they told us what not to build. That saved us six months and a rewrite we didn't see coming.</p>
+        <div class="testi-author">
+          <div class="testi-initial">S</div>
+          <div><div class="testi-name">Sarah K.</div><div class="testi-role">CEO · Health Tech Startup</div></div>
+        </div>
+      </div>
+      <div class="testi-card reveal d1">
+        <span class="testi-mark">"</span>
+        <p class="testi-text">We'd spoken to three consultancies before Sitting Caramel. They were the only ones who came back with a recommendation that didn't involve buying something new.</p>
+        <div class="testi-author">
+          <div class="testi-initial">M</div>
+          <div><div class="testi-name">Marcus T.</div><div class="testi-role">COO · Regional Logistics Co.</div></div>
+        </div>
+      </div>
+      <div class="testi-card reveal d2">
+        <span class="testi-mark">"</span>
+        <p class="testi-text">The Discovery Sprint paid for itself in the first board meeting where we had a real plan. We've been working with Sitting Caramel for two years since.</p>
+        <div class="testi-author">
+          <div class="testi-initial">R</div>
+          <div><div class="testi-name">Rachel O.</div><div class="testi-role">VP Strategy · Financial Services</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta-section" id="contact">
+  <div class="section-wrap">
+    <div class="cta-eyebrow">Ready When You Are</div>
+    <h2 class="cta-title">Let's solve<br>something <em>hard.</em></h2>
+    <p class="cta-sub">Every engagement starts with a conversation. Tell us what you're working on — we'll tell you honestly if we can help.</p>
+    <div class="cta-btns">
+      <a href="mailto:hello@sittingcaramel.co" class="btn-light">Book a Discovery Call</a>
+      <a href="#services" class="btn-outline-light">View Services</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-top">
+    <div class="footer-brand">
+      <div class="footer-brand-name">Sitting Caramel</div>
+      <p>Technology consulting for companies that take their technology seriously.</p>
+    </div>
+    <div class="footer-col">
+      <h4>Services</h4>
+      <ul>
+        <li><a href="#services">Technology Advisory</a></li>
+        <li><a href="#services">Product Development</a></li>
+        <li><a href="#services">Discovery Sprints</a></li>
+        <li><a href="#clients">Who We Serve</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Company</h4>
+      <ul>
+        <li><a href="#about">Philosophy</a></li>
+        <li><a href="#process">Process</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h4>Contact</h4>
+      <ul>
+        <li><a href="mailto:hello@sittingcaramel.co">hello@sittingcaramel.co</a></li>
+        <li><a href="#">LinkedIn</a></li>
+        <li><a href="#">Schedule a Call</a></li>
+      </ul>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span class="footer-copy">© 2026 Sitting Caramel. All rights reserved.</span>
+    <span class="footer-tag">Strategy · Build · Deliver</span>
+  </div>
+</footer>
+
+<script>
+// Cursor
+const cur = document.getElementById('cur');
+const trail = document.getElementById('trail');
+let mx = 0, my = 0, tx = 0, ty = 0;
+document.addEventListener('mousemove', e => { mx = e.clientX; my = e.clientY; });
+(function loop() {
+  cur.style.left = mx + 'px'; cur.style.top = my + 'px';
+  tx += (mx - tx) * 0.13; ty += (my - ty) * 0.13;
+  trail.style.left = tx + 'px'; trail.style.top = ty + 'px';
+  requestAnimationFrame(loop);
+})();
+
+// Navbar scroll
+const nav = document.getElementById('nav');
+window.addEventListener('scroll', () => nav.classList.toggle('scrolled', scrollY > 60));
+
+// Scroll reveal
+const els = document.querySelectorAll('.reveal');
+const obs = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('in'); obs.unobserve(e.target); } });
+}, { threshold: 0.1 });
+els.forEach(el => obs.observe(el));
+
+// Smooth scroll
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  a.addEventListener('click', e => {
+    const t = document.querySelector(a.getAttribute('href'));
+    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth' }); }
+  });
+});
+</script>
+</body>
+</html>
